@@ -12,22 +12,16 @@ Assim que o servidor recebe e processa esse pedido, ele retorna uma resposta HTT
 
 ## 2. Anatomia da Requisição e da Resposta
 
-Tanto a requisição (enviada pelo navegador) quanto a resposta (devolvida pelo servidor) são mensagens de texto estruturadas em três partes principais: linha inicial, cabeçalhos e corpo.
-
-Abaixo está o exemplo real capturado do funcionamento do próprio servidor do projeto para a rota principal (`/`):
+Tanto a requisição (enviada pelo navegador) quanto a resposta (devolvida pelo servidor) são mensagens de texto estruturadas em três partes principais: **linha inicial**, **cabeçalhos** e **corpo**.
 
 ### Requisição HTTP (Cliente → Servidor)
-
-**HTTP**
-
 ```http
 GET / HTTP/1.1
 Host: localhost:3000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)
-Accept: text/html,application/xhtml+xml,application/xml
-```
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8
 
-- **Linha Inicial (Request Line):** `GET / HTTP/1.1` — informa o método HTTP (`GET`), o caminho solicitado (`/`) e a versão do protocolo (`HTTP/1.1`).
+- **Linha Inicial (Request Line):** `GET / HTTP/1.1` informa o método HTTP (`GET`), o caminho solicitado (`/`) e a versão do protocolo (`HTTP/1.1`).
 - **Cabeçalhos:** `Host`, `User-Agent` e `Accept` enviam metadados sobre quem está fazendo a requisição e quais formatos o navegador aceita.
 - **Corpo:** Vazio nesta requisição, pois o método `GET` serve apenas para buscar dados.
 
@@ -35,18 +29,17 @@ Accept: text/html,application/xhtml+xml,application/xml
 
 **HTTP**
 
-```http
-HTTP/1.1 200 OK
-Content-Type: text/html; charset=utf-8
-Date: Mon, 12 Oct 2026 17:40:00 GMT
+```HTTP/1.1 200 OK
 Connection: keep-alive
-Content-Length: 382
+Content-Type: text/html; charset=utf-8
+Date: Mon, 12 Oct 2026 18:38:06 GMT
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
 ```
 
 **HTML**
 
-```html
-<!DOCTYPE html>
+```<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
@@ -64,9 +57,9 @@ Content-Length: 382
 </html>
 ```
 
-- **Linha Inicial (Status Line):** `HTTP/1.1 200 OK` — informa a versão do protocolo, o código de status (`200`) e a mensagem de sucesso (`OK`).
-- **Cabeçalhos (Headers):** `Content-Type: text/html; charset=utf-8` e `Content-Length` especificam a codificação do documento e seu tamanho em bytes.
-- **Corpo (Body):** Conteúdo HTML completo gerado pela função `homePage()` e a função utilitária `layout()`.
+- **Linha Inicial:** `HTTP/1.1 200 OK` — informa a versão do protocolo, o código de status (`200`) e a mensagem de sucesso (`OK`).
+- **Cabeçalhos:** `Content-Type: text/html; charset=utf-8` e `Content-Length` especificam a codificação do documento e seu tamanho em bytes.
+- **Corpo:** Conteúdo HTML completo gerado pela função `homePage()` e a função utilitária `layout()`.
 
 ## 3. Métodos HTTP
 
@@ -143,6 +136,112 @@ Para que os sistemas consigam manter ações contínuas, como um usuário logado
 
 O HTTP é um protocolo padrão para transmissão de dados, só que de forma simples. Mas ele não é seguro. Já o HTTPS utiliza criptografia dos dados que serão transmitidos, garantindo que a comunicação entre o servidor e cliente seja segura e privada.
 
+## Evidências de Funcionamento
+
+### Capturas de Ecrã do DevTools (Aba Network)
+
+#### 1. Rota `/` (Página Inicial)
+![DevTools - Rota /](./docs/prints/rota-inicio.png)
+*A captura mostra a resposta da rota principal com o código de status 200 OK e o cabeçalho Content-Type configurado como text/html; charset=utf-8.*
+
+#### 2. Rota `/sobre`
+![DevTools - Rota /sobre](./docs/prints/rota-sobre.png)
+*A captura mostra a requisição bem-sucedida para a rota /sobre, retornando o código de status 200 OK e a estrutura HTML correspondente.*
+
+#### 3. Rota `/antigo` (Redirecionamento)
+![DevTools - Rota /antigo](./docs/prints/rota-antigo.png)
+*A captura mostra o status de redirecionamento permanente 301 Moved Permanently e o cabeçalho Location direcionando o navegador para /sobre.*
+
+#### 4. Rota `/busca?termo=node` (Busca com Parâmetro)
+![DevTools - Rota /busca com termo](./docs/prints/rota-busca-termo.png)
+*A captura mostra o retorno do status 200 OK processando com sucesso o parâmetro "termo=node" enviado na URL.*
+
+#### 5. Rota `/busca` (Busca sem Parâmetro)
+![DevTools - Rota /busca sem termo](./docs/prints/rota-busca-sem-termo.png)
+*A captura mostra o erro de cliente 400 Bad Request retornado ao aceder à rota de busca sem fornecer o parâmetro obrigatório "termo".*
+
+#### 6. Rota `/admin` (Acesso Negado)
+![DevTools - Rota /admin](./docs/prints/rota-admin.png)
+*A captura mostra a resposta com status 403 Forbidden, bloqueando o acesso à rota administrativa.*
+
+#### 7. Rota `/contato` com método GET
+![DevTools - Rota /contato GET](./docs/prints/rota-contato-get.png)
+*A captura mostra o acesso bem-sucedido à página de contato via método GET com status 200 OK.*
+
+#### 8. Rota `/contato` com método POST
+![DevTools - Rota /contato POST](./docs/prints/rota-contato-post.png)
+*A captura mostra a resposta 405 Method Not Allowed e o cabeçalho Allow: GET ao tentar enviar uma requisição POST.*
+
+#### 9. Rota Inexistente (`/rota-invalida`)
+![DevTools - Rota 404](./docs/prints/rota-404.png)
+*A captura mostra o tratamento de rotas não encontradas retornando o status 404 Not Found.*
+
+---
+
+### Testes via Terminal (Comando `curl -i`)
+
+#### 1. Redirecionamento da rota `/antigo`
+
+```
+curl -i http://localhost:3000/antigo
+
+```
+
+**Saída obtida no terminal:**
+
+```
+HTTP/1.1 301 Moved Permanently
+Location: /sobre
+Date: Mon, 12 Oct 2026 19:56:23 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+```
+
+#### 2. Validação da rota `/busca` sem parâmetro
+
+```
+curl -i http://localhost:3000/busca
+
+```
+
+**Saída obtida no terminal:**
+
+```
+HTTP/1.1 400 Bad Request
+Content-Type: text/html; charset=utf-8
+Date: Mon, 12 Oct 2026 19:56:54 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+<h1>Erro 400</h1><p>O parâmetro 'termo' é obrigatório.</p>
+
+```
+
+#### 3. Teste do método não permitido em `/contato`
+
+```
+curl -i -X POST http://localhost:3000/contato
+
+```
+
+**Saída obtida no terminal:**
+
+```
+HTTP/1.1 405 Method Not Allowed
+Content-Type: text/html; charset=utf-8
+Allow: GET
+Date: Mon, 12 Oct 2026 19:57:45 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+<h1>405 Método Não Permitido</h1>
+
+```
+
 ## Referências
 
 - Uma visão geral do HTTP - HTTP | MDN. Disponível em:[ https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Guides/Overview](https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Guides/Overview). Acesso em: 8 out. 2026.
@@ -159,8 +258,8 @@ O HTTP é um protocolo padrão para transmissão de dados, só que de forma simp
 
 GOOGLE. Gemini (modelo 1.5 Flash). Ferramenta de inteligência artificial generativa.
 
-Data de uso: 11 out. 2026.
+Data de uso: 12 out. 2026.
 
-Finalidade: suporte em pesquisa teórica sobre o protocolo HTTP, fluxo cliente-servidor, métodos, cabeçalhos, códigos de status, anatomia de requisição/resposta e validação das regras de roteamento (parâmetros de busca, status 405). 
+Finalidade: suporte na pesquisa teórica do protocolo HTTP, validação das rotas, orientação na coleta de evidências (DevTools e curl) e formatação final do README.md. 
 
 Arquivos impactados: `README.md, src/routes.js`;
