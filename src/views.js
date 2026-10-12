@@ -11,6 +11,7 @@ function layout(title, content) {
             <nav>
                 <a href="/">Início</a>
                 <a href="/sobre">Sobre</a>
+                <a href="/contato">Contato</a>
             </nav>
             ${content}
         </body>
@@ -24,6 +25,10 @@ export function homePage() {
 
 export function aboutPage() {
     return layout('Sobre', '<h1>Sobre Nós</h1>');
+}
+
+export function contactPage() {
+    return layout('Contato', '<h1>Página de Contato</h1>');
 }
 
 export function adminPage() {
