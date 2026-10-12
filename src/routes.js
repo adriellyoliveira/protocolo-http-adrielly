@@ -40,6 +40,11 @@ export function route(req, res) {
     }
 
 
+    if (req.method === "GET" && req.url === "/admin") {
+        res.writeHead(403, { "Content-Type": "text/html" })
+        res.end(adminPage())
+        return
+    }
 
     res.writeHead(404, { "Content-Type": "text/html" })
     res.end(notFoundPage())
