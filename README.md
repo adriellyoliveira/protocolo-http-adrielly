@@ -20,6 +20,7 @@ GET / HTTP/1.1
 Host: localhost:3000
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8
+```
 
 - **Linha Inicial (Request Line):** `GET / HTTP/1.1` informa o método HTTP (`GET`), o caminho solicitado (`/`) e a versão do protocolo (`HTTP/1.1`).
 - **Cabeçalhos:** `Host`, `User-Agent` e `Accept` enviam metadados sobre quem está fazendo a requisição e quais formatos o navegador aceita.
@@ -27,9 +28,8 @@ Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/w
 
 ### Resposta HTTP (Servidor → Cliente)
 
-**HTTP**
-
-```HTTP/1.1 200 OK
+```http
+HTTP/1.1 200 OK
 Connection: keep-alive
 Content-Type: text/html; charset=utf-8
 Date: Mon, 12 Oct 2026 18:38:06 GMT
@@ -57,7 +57,7 @@ Transfer-Encoding: chunked
 </html>
 ```
 
-- **Linha Inicial:** `HTTP/1.1 200 OK` — informa a versão do protocolo, o código de status (`200`) e a mensagem de sucesso (`OK`).
+- **Linha Inicial:** `HTTP/1.1 200 OK` informa a versão do protocolo, o código de status (`200`) e a mensagem de sucesso (`OK`).
 - **Cabeçalhos:** `Content-Type: text/html; charset=utf-8` e `Content-Length` especificam a codificação do documento e seu tamanho em bytes.
 - **Corpo:** Conteúdo HTML completo gerado pela função `homePage()` e a função utilitária `layout()`.
 
@@ -241,6 +241,10 @@ Transfer-Encoding: chunked
 <h1>405 Método Não Permitido</h1>
 
 ```
+
+## Conclusão
+
+Depois de pesquisar e testar na prática, vi que a principal mudança que eu faria no servidor seria organizar melhor as rotas para garantir que cada uma responda exatamente com o método e o status corretos. Antes, requisições com dados faltando ou métodos errados passavam sem o devido tratamento. Agora fica claro como faz diferença usar os códigos certos em cada situação. Além de deixar o servidor mais seguro e organizado, isso evita comportamentos estranhos no navegador e garante uma experiência bem melhor para o usuário.
 
 ## Referências
 
